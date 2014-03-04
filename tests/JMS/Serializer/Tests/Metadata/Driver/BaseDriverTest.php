@@ -169,6 +169,24 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(), $m->discriminatorMap);
     }
 
+    public function testLoadDiscriminatorXmlAttribute()
+    {
+        /** @var $m ClassMetadata */
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\DiscriminatorXmlAttribute\Vehicle'));
+
+        $this->assertNotNull($m);
+        $this->assertEquals('type', $m->discriminatorFieldName);
+        $this->assertEquals(true, $m->discriminatorXmlAttribute);
+        $this->assertEquals($m->name, $m->discriminatorBaseClass);
+        $this->assertEquals(
+            array(
+                'car' => 'JMS\Serializer\Tests\Fixtures\DiscriminatorXmlAttribute\Car',
+                'moped' => 'JMS\Serializer\Tests\Fixtures\DiscriminatorXmlAttribute\Moped',
+            ),
+            $m->discriminatorMap
+        );
+    }
+
     public function testLoadXmlObjectWithNamespacesMetadata()
     {
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\Serializer\Tests\Fixtures\ObjectWithXmlNamespaces'));

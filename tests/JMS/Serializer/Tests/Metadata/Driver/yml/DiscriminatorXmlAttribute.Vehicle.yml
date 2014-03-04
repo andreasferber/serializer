@@ -1,0 +1,11 @@
+JMS\Serializer\Tests\Fixtures\DiscriminatorXmlAttribute\Vehicle:
+    discriminator:
+        field_name: type
+        xml_attribute: true
+        map:
+            car: JMS\Serializer\Tests\Fixtures\DiscriminatorXmlAttribute\Car
+            moped: JMS\Serializer\Tests\Fixtures\DiscriminatorXmlAttribute\Moped
+
+    properties:
+        km:
+            type: integer
