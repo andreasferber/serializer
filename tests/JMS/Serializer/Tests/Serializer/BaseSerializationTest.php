@@ -27,6 +27,7 @@ use JMS\Serializer\Tests\Fixtures\DateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use JMS\Serializer\Tests\Fixtures\Discriminator\Moped;
 use JMS\Serializer\Tests\Fixtures\Garage;
+use JMS\Serializer\Tests\Fixtures\DiscriminatorXmlAttribute\Car as CarWithDiscriminatorXmlAttribute;
 use JMS\Serializer\Tests\Fixtures\InlineChildEmpty;
 use JMS\Serializer\Tests\Fixtures\NamedDateTimeArraysObject;
 use JMS\Serializer\Tests\Fixtures\Tree;
@@ -893,6 +894,62 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->deserialize(
             $this->getContent('car_without_type'),
             'JMS\Serializer\Tests\Fixtures\Discriminator\Vehicle'
+        );
+    }
+
+    /**
+     * @group polymorphic
+     */
+    public function testPolymorphicObjectsWithDiscriminatorXmlAttribute()
+    {
+        $this->assertEquals(
+            $this->getContent('car_discriminator_xml_attribute'),
+            $this->serialize(new CarWithDiscriminatorXmlAttribute(5))
+        );
+
+        if ($this->hasDeserializer()) {
+            $this->assertEquals(
+                new CarWithDiscriminatorXmlAttribute(5),
+                $this->deserialize(
+                    $this->getContent('car_discriminator_xml_attribute'),
+                    'JMS\Serializer\Tests\Fixtures\DiscriminatorXmlAttribute\Car'
+                ),
+                'Class is resolved correctly when concrete sub-class is used.'
+            );
+
+            $this->assertEquals(
+                new CarWithDiscriminatorXmlAttribute(5),
+                $this->deserialize(
+                    $this->getContent('car_discriminator_xml_attribute'),
+                    'JMS\Serializer\Tests\Fixtures\DiscriminatorXmlAttribute\Vehicle'
+                ),
+                'Class is resolved correctly when least supertype is used.'
+            );
+
+            $this->assertEquals(
+                new CarWithDiscriminatorXmlAttribute(5),
+                $this->deserialize(
+                    $this->getContent('car_without_type'),
+                    'JMS\Serializer\Tests\Fixtures\DiscriminatorXmlAttribute\Car'
+                ),
+                'Class is resolved correctly when concrete sub-class is used and no type is defined.'
+            );
+        }
+    }
+
+    /**
+     * @group polymorphic
+     * @expectedException LogicException
+     */
+    public function testPolymorphicObjectsInvalidDeserializationWithDiscriminatorXmlAttribute()
+    {
+        if (!$this->hasDeserializer()) {
+            throw new \LogicException('No deserializer');
+        }
+
+        $this->deserialize(
+            $this->getContent('car_without_type'),
+            'JMS\Serializer\Tests\Fixtures\DiscriminatorXmlAttribute\Vehicle'
         );
     }
 
