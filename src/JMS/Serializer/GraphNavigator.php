@@ -260,6 +260,10 @@ final class GraphNavigator
                 $typeValue = (string) $data->{$metadata->discriminatorFieldName};
                 break;
 
+            case ($data instanceof \SimpleXMLElement) && isset($data->attributes()->{$metadata->discriminatorFieldName}):
+                $typeValue = (string) $data->attributes()->{$metadata->discriminatorFieldName};
+                break;
+
             default:
                 throw new \LogicException(sprintf(
                     'The discriminator field name "%s" for base-class "%s" was not found in input data.',
