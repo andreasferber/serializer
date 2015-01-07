@@ -41,7 +41,8 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.14-dev"
+            "dev-master": "0.14-dev",
+            "dev-stable+patches": "0.15.x-dev"
         }
     }
 }
